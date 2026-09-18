@@ -3,6 +3,5 @@ __pycache__/
 venv/
 *.db
 *.log
-.ipynb_checkpoints/
-*.zip
 .env
+images/submissions

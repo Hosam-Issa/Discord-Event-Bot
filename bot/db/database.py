@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from models import (
+from bot.db.models import (
     CREATE_TEAMS_TABLE,
     CREATE_PLAYERS_TABLE,
     CREATE_TILES_TABLE,

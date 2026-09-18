@@ -45,6 +45,7 @@ CREATE_SUBMISSIONS_TABLE = """
         drop_name TEXT NOT NULL,
         image_path TEXT NOT NULL,
         status TEXT NOT NULL DEFAULT 'pending',
+        rejection_reason TEXT,
         submitted_at TEXT NOT NULL,
         reviewed_by INTEGER,
         reviewed_at TEXT
