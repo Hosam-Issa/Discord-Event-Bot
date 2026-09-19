@@ -48,6 +48,7 @@ CREATE_SUBMISSIONS_TABLE = """
         rejection_reason TEXT,
         submitted_at TEXT NOT NULL,
         reviewed_by INTEGER,
-        reviewed_at TEXT
+        reviewed_at TEXT,
+        message_id INTEGER
     )
 """

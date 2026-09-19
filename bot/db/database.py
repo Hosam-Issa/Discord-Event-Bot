@@ -30,33 +30,35 @@ def init_db():
     conn.close()
 
 def get_team_score(team_id):
-    conn = get_connection()
-    cur = conn.cursor()
-
-    cur.execute("""
-        SELECT SUM(tiles.point_value) AS total
-        FROM team_tile_status
-        JOIN tiles ON team_tile_status.tile_id = tiles.id
-        WHERE team_tile_status.team_id = ?
-            AND team_tile_status.completed = 1
-    """, (team_id,))
-                
-    row = cur.fetchone()
-    conn.close()
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT SUM(tiles.point_value) AS total
+            FROM team_tile_status
+            JOIN tiles ON team_tile_status.tile_id = tiles.id
+            WHERE team_tile_status.team_id = ?
+                AND team_tile_status.completed = 1
+        """, (team_id,))
+                    
+        row = cur.fetchone()
+    finally:
+        conn.close()
 
     return row["total"] if row["total"] is not None else 0
 
 def get_board_state(team_id):
-    conn = get_connection()
-    cur = conn.cursor()
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT tile_id FROM team_tile_status
+            WHERE team_id = ?
+                AND completed = 1
+        """, (team_id,))
 
-    cur.execute("""
-        SELECT tile_id FROM team_tile_status
-        WHERE team_id = ?
-            AND completed = 1
-    """, (team_id,))
-
-    rows = cur.fetchall()
-    conn.close()
+        rows = cur.fetchall()
+    finally:
+        conn.close()
 
     return [row["tile_id"] for row in rows]
