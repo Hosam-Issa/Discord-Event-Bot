@@ -4,4 +4,6 @@ venv/
 *.db
 *.log
 .env
-images/submissions
+images/
+assets/
+test.py
