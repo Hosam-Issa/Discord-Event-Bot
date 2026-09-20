@@ -52,3 +52,10 @@ CREATE_SUBMISSIONS_TABLE = """
         message_id INTEGER
     )
 """
+
+CREATE_LEADERBOARD_MESSAGES_TABLE = """
+    CREATE TABLE IF NOT EXISTS leaderboard_messages (
+    key TEXT PRIMARY KEY,
+    message_id INTEGER NOT NULL
+    )
+"""
