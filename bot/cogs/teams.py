@@ -16,10 +16,12 @@ class Register(commands.Cog):
             cur.execute("SELECT id, role_id, name FROM teams")
             all_teams = cur.fetchall()
 
+            # Which of the player's Discord roles match a known team role?
             member_role_ids = {role.id for role in interaction.user.roles}
-
             matched_teams = [t for t in all_teams if t["role_id"] in member_role_ids]
 
+            # Require exactly one team role — zero or multiple both need admin intervention
+            # rather than the bot guessing which team the player belongs to.
             if len(matched_teams) == 0:
                 await interaction.response.send_message("You don't have a team role yet. Ask an admin to assign you one.")
                 conn.close()
@@ -32,9 +34,14 @@ class Register(commands.Cog):
             team_id = matched_teams[0]["id"]
             team_name = matched_teams[0]["name"]
 
+            # Register the player
             cur.execute("""
                 INSERT INTO players (discord_id, discord_username, osrs_name, team_id)
                 VALUES (?, ?, ?, ?)
+                ON CONFLICT(discord_id) DO UPDATE SET
+                    discord_username = excluded.discord_username,
+                    osrs_name = excluded.osrs_name,
+                    team_id = excluded.team_id
             """, (interaction.user.id, interaction.user.name, osrs_name, team_id))
 
             conn.commit()

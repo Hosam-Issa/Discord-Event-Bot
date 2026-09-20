@@ -1,5 +1,7 @@
 from bot.db.database import get_connection
 
+# Called once at bot startup. Checks whether teams/tiles already exist before
+# seeding, so this is safe to call every time the bot starts, not just the first time.
 def seed_if_needed():
     conn = get_connection()
     cur = conn.cursor()
@@ -37,6 +39,8 @@ def seed_teams():
 def seed_tiles():
     conn = get_connection()
     cur = conn.cursor()
+    # 25 tiles (0-24), all sharing the same point value except the center (12),
+    # which is the free tile.
     tiles = [(i, 1, 1 if i == 12 else 0, f"Test Drop {i}") for i in range(25)]
     cur.executemany("""
         INSERT INTO tiles (position, point_value, is_free, description)
@@ -46,6 +50,7 @@ def seed_tiles():
     conn.close()
 
 
+# Lets this file also be run directly (python -m bot.db.seed) for a manual, one-off reseed.
 if __name__ == "__main__":
     seed_teams()
     seed_tiles()
